@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import formStyles from "../../../styles/Form.module.scss";
 import axios from 'axios';
 
+//Submit New 
 const NewDiscussion = () => {
   const [title, setTitle] = useState("");
   const [authors, setAuthors] = useState<string[]>([]);

@@ -3,6 +3,8 @@ import SortableTable from "../../components/table/SortableTable";
 import data from "../../utils/dummydata.json";
 import axios from 'axios';
 
+//View Articles 
+
 interface ArticlesInterface {
   id: string;
   title: string;
