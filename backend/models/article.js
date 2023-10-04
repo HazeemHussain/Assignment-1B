@@ -1,4 +1,4 @@
-// models/Book.js
+// models/articles
 
 const mongoose = require('mongoose');
 
