@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import formStyles from "../../../styles/Form.module.scss";
 import axios from 'axios';
+import { useEffect } from "react";
 
 const NewDiscussion = () => {
   const [title, setTitle] = useState("");
@@ -19,47 +20,44 @@ const NewDiscussion = () => {
 
   // This function handles the form submission
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-     event.preventDefault();
-
+    event.preventDefault();
 
 
     //|| !source || !doi || !summary || !linkedDiscussion
     if (!title || authors.length === 0) {
       setErrorMessage('Please enter the title of the article and author name');
-      return; 
-    } 
+      return;
+    }
 
+    // Create an object with the form data
+    const formData = {
+      title,
+      authors: authorsString, // Send the authors as a string
+      source,
+      pubYear,
+      doi,
+      summary,
+      linkedDiscussion,
+    };
 
-
-      // Create an object with the form data
-      const formData = {
-        title,
-        authors: authorsString, // Send the authors as a string
-        source,
-        pubYear,
-        doi,
-        summary,
-        linkedDiscussion,
-      };
-      try {
+    try {
+      setIsSubmitting(true);
+    
+      //console.log("Button text set to 'Submitting...'"); // Add this line
+    
+      setTimeout(async () => {
         // Send the form data to your backend API
-        const response = await axios.post('http://localhost:8082/api/article', formData);
-
+         const response = await axios.post('http://localhost:8082/api/article', formData);
+        
         console.log('Data sent successfully:', response.data);
-        window.location.reload();
-        // Start the animation
-        setIsSubmitting(true);
-
-        // Simulate form submission (replace with your actual form submission logic)
+        
+        // After successful submission, set "Submitted"
+        setIsSuccess(true);
+       // console.log("Set isSuccess to true"); // Add this line
+        
+        // Reset back to "Submit" after 1 second
         setTimeout(() => {
-          // Stop the animation after a delay (you can adjust the delay as needed)
           setIsSubmitting(false);
-
-          // If the submission is successful, show the success message
-          setIsSuccess(true);
-
-          resetSuccessMessage();
-          // Clear the form fields
           setTitle("");
           setAuthors([]);
           setSource("");
@@ -67,13 +65,19 @@ const NewDiscussion = () => {
           setDoi("");
           setSummary("");
           setLinkedDiscussion("");
-        }, 1000); // Adjust the delay as needed
-      } catch (error) {
-        console.error('Error sending data:', error);
-      }
+          
+          // Reload the page after 1 second
+          setTimeout(() => {
+            window.location.reload();
+          }, 200);
+        }, 500);
+      }, 200);
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
     
-
-  }
+   
+  };
 
   // Some helper methods for the authors array
   // Function to add an author to the list
