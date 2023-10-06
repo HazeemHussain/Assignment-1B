@@ -1,4 +1,4 @@
-// models/Book.js
+// models/articles
 
 const mongoose = require('mongoose');
 
@@ -13,7 +13,7 @@ const ArticleSchema = new mongoose.Schema({
   },
   source: {
     type: String,
-    required: true
+  
   },
   pubYear: {
     type: String

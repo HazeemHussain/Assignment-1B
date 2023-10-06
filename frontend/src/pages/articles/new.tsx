@@ -11,47 +11,100 @@ const NewDiscussion = () => {
   const [doi, setDoi] = useState("");
   const [summary, setSummary] = useState("");
   const [linkedDiscussion, setLinkedDiscussion] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false); // State for success message
 
-  const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  // Function to join the authors array into a single string
+  const authorsString = authors.join(", ");
 
-    console.log(
-      JSON.stringify({
+  // This function handles the form submission
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+     event.preventDefault();
+
+
+
+    //|| !source || !doi || !summary || !linkedDiscussion
+    if (!title || authors.length === 0) {
+      setErrorMessage('Please enter the title of the article and author name');
+      return; 
+    } 
+
+
+
+      // Create an object with the form data
+      const formData = {
         title,
-        authors,
+        authors: authorsString, // Send the authors as a string
         source,
-        publication_year: pubYear,
+        pubYear,
         doi,
         summary,
-        linked_discussion: linkedDiscussion,
-      })
-    );
-  };
+        linkedDiscussion,
+      };
+      try {
+        // Send the form data to your backend API
+        const response = await axios.post('http://localhost:8082/api/article', formData);
+
+        console.log('Data sent successfully:', response.data);
+        window.location.reload();
+        // Start the animation
+        setIsSubmitting(true);
+
+        // Simulate form submission (replace with your actual form submission logic)
+        setTimeout(() => {
+          // Stop the animation after a delay (you can adjust the delay as needed)
+          setIsSubmitting(false);
+
+          // If the submission is successful, show the success message
+          setIsSuccess(true);
+
+          resetSuccessMessage();
+          // Clear the form fields
+          setTitle("");
+          setAuthors([]);
+          setSource("");
+          setPubYear(0);
+          setDoi("");
+          setSummary("");
+          setLinkedDiscussion("");
+        }, 1000); // Adjust the delay as needed
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
+    
+
+  }
 
   // Some helper methods for the authors array
-
+  // Function to add an author to the list
   const addAuthor = () => {
-    setAuthors(authors.concat([""]));
+    setAuthors([...authors, ""]);
   };
 
   const removeAuthor = (index: number) => {
-    setAuthors(authors.filter((_, i) => i !== index));
+    const updatedAuthors = [...authors];
+    updatedAuthors.splice(index, 1);
+    setAuthors(updatedAuthors);
   };
 
   const changeAuthor = (index: number, value: string) => {
-    setAuthors(
-      authors.map((oldValue, i) => {
-        return index === i ? value : oldValue;
-      })
-    );
+    const updatedAuthors = [...authors];
+    updatedAuthors[index] = value;
+    setAuthors(updatedAuthors);
   };
 
-  // Return the full form
+  // Function to reset the success message
+  const resetSuccessMessage = () => {
+    setIsSuccess(false);
+  };
 
   return (
     <div className="container">
       <h1>New Article</h1>
-      <form className={formStyles.form} onSubmit={submitNewArticle}>
+
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      <form className={formStyles.form} onSubmit={handleSubmit}>
         <label htmlFor="title">Title:</label>
         <input
           className={formStyles.formItem}
@@ -62,30 +115,29 @@ const NewDiscussion = () => {
           onChange={(event) => {
             setTitle(event.target.value);
           }}
+          placeholder="Enter the title"
         />
 
         <label htmlFor="author">Authors:</label>
-        {authors.map((author, index) => {
-          return (
-            <div key={`author ${index}`} className={formStyles.arrayItem}>
-              <input
-                type="text"
-                name="author"
-                value={author}
-                onChange={(event) => changeAuthor(index, event.target.value)}
-                className={formStyles.formItem}
-              />
-              <button
-                onClick={() => removeAuthor(index)}
-                className={formStyles.buttonItem}
-                style={{ marginLeft: "3rem" }}
-                type="button"
-              >
-                -
-              </button>
-            </div>
-          );
-        })}
+        {authors.map((author, index) => (
+          <div key={`author-${index}`} className={formStyles.arrayItem}>
+            <input
+              type="text"
+              name={`author-${index}`}
+              value={author}
+              onChange={(event) => changeAuthor(index, event.target.value)}
+              className={formStyles.formItem}
+              placeholder={`Author ${index + 1}`}
+            />
+            <button
+              onClick={() => removeAuthor(index)}
+              className={formStyles.buttonItem}
+              type="button"
+            >
+              -
+            </button>
+          </div>
+        ))}
         <button
           onClick={() => addAuthor()}
           className={formStyles.buttonItem}
@@ -105,6 +157,7 @@ const NewDiscussion = () => {
           onChange={(event) => {
             setSource(event.target.value);
           }}
+          placeholder="Enter the source"
         />
 
         <label htmlFor="pubYear">Publication Year:</label>
@@ -122,6 +175,7 @@ const NewDiscussion = () => {
               setPubYear(parseInt(val));
             }
           }}
+          placeholder="Enter the publication year"
         />
 
         <label htmlFor="doi">DOI:</label>
@@ -134,6 +188,7 @@ const NewDiscussion = () => {
           onChange={(event) => {
             setDoi(event.target.value);
           }}
+          placeholder="Enter the DOI"
         />
 
         <label htmlFor="summary">Summary:</label>
@@ -142,11 +197,19 @@ const NewDiscussion = () => {
           name="summary"
           value={summary}
           onChange={(event) => setSummary(event.target.value)}
+          placeholder="Enter the summary"
         />
 
-        <button className={formStyles.formItem} type="submit">
-          Submit
+        <button
+          className={`${formStyles.formItem} ${isSubmitting ? formStyles.animatePulse : ""
+            }`}
+          type="submit"
+          disabled={isSubmitting} // Disable the button while submitting
+          onClick={resetSuccessMessage} //This line will reset the success message
+        >
+          {isSubmitting ? "Submitting..." : isSuccess ? "Submitted" : "Submit"}
         </button>
+
       </form>
     </div>
   );
