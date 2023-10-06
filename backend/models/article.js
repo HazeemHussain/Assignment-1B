@@ -13,7 +13,7 @@ const ArticleSchema = new mongoose.Schema({
   },
   source: {
     type: String,
-    required: true
+  
   },
   pubYear: {
     type: String

@@ -12,49 +12,68 @@ const NewDiscussion = () => {
   const [linkedDiscussion, setLinkedDiscussion] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false); // State for success message
 
   // Function to join the authors array into a single string
   const authorsString = authors.join(", ");
 
   // This function handles the form submission
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+     event.preventDefault();
 
-    // Start the animation
-    setIsSubmitting(true);
 
-    // Simulate form submission (replace with your actual form submission logic)
-    setTimeout(() => {
-      // Stop the animation after a delay (you can adjust the delay as needed)
-      setIsSubmitting(false);
 
-      // Add your form submission logic here (e.g., axios.post)
-    }, 1000); // Adjust the delay as needed
+    //|| !source || !doi || !summary || !linkedDiscussion
+    if (!title || authors.length === 0) {
+      setErrorMessage('Please enter the title of the article and author name');
+      return; 
+    } 
 
-    if (!title || authors.length === 0 || !source || !doi || !summary || !linkedDiscussion) {
-      setErrorMessage('Please fill in all the required fields');
-    }
 
-    // Create an object with the form data
-    const formData = {
-      title,
-      authors: authorsString, // Send the authors as a string
-      source,
-      pubYear,
-      doi,
-      summary,
-      linkedDiscussion,
-    };
-    try {
-      // Send the form data to your backend API
-      const response = await axios.post('http://localhost:8082/api/article', formData);
 
-      console.log('Data sent successfully:', response.data);
-      window.location.reload();
-    } catch (error) {
-      console.error('Error sending data:', error);
-    }
-  };
+      // Create an object with the form data
+      const formData = {
+        title,
+        authors: authorsString, // Send the authors as a string
+        source,
+        pubYear,
+        doi,
+        summary,
+        linkedDiscussion,
+      };
+      try {
+        // Send the form data to your backend API
+        const response = await axios.post('http://localhost:8082/api/article', formData);
+
+        console.log('Data sent successfully:', response.data);
+        window.location.reload();
+        // Start the animation
+        setIsSubmitting(true);
+
+        // Simulate form submission (replace with your actual form submission logic)
+        setTimeout(() => {
+          // Stop the animation after a delay (you can adjust the delay as needed)
+          setIsSubmitting(false);
+
+          // If the submission is successful, show the success message
+          setIsSuccess(true);
+
+          resetSuccessMessage();
+          // Clear the form fields
+          setTitle("");
+          setAuthors([]);
+          setSource("");
+          setPubYear(0);
+          setDoi("");
+          setSummary("");
+          setLinkedDiscussion("");
+        }, 1000); // Adjust the delay as needed
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
+    
+
+  }
 
   // Some helper methods for the authors array
   // Function to add an author to the list
@@ -74,7 +93,11 @@ const NewDiscussion = () => {
     setAuthors(updatedAuthors);
   };
 
-  
+  // Function to reset the success message
+  const resetSuccessMessage = () => {
+    setIsSuccess(false);
+  };
+
   return (
     <div className="container">
       <h1>New Article</h1>
@@ -177,13 +200,15 @@ const NewDiscussion = () => {
         />
 
         <button
-          className={`${formStyles.formItem} ${
-            isSubmitting ? formStyles.animatePulse : ""
-          }`}
+          className={`${formStyles.formItem} ${isSubmitting ? formStyles.animatePulse : ""
+            }`}
           type="submit"
+          disabled={isSubmitting} // Disable the button while submitting
+          onClick={resetSuccessMessage} //This line will reset the success message
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Submitting..." : isSuccess ? "Submitted" : "Submit"}
         </button>
+
       </form>
     </div>
   );
