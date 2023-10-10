@@ -1,0 +1,4 @@
+{
+    "mongoURI":
+    "mongodb+srv://assignment_1b:assignment_1b@cluster1.ay39tkq.mongodb.net/?retryWrites=true&w=majority"
+  }
