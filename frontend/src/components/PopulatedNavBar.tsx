@@ -3,8 +3,11 @@ import NavBar from "./nav/NavBar";
 import NavDropdown from "./nav/NavDropdown";
 import NavItem from "./nav/NavItem";
 import axios from 'axios';
+import { useState } from "react";
+
 
 const PopulatedNavBar = () => {
+ 
   return (
     <NavBar>
       <NavItem>SPEED</NavItem>
@@ -19,8 +22,11 @@ const PopulatedNavBar = () => {
           <NavItem route="/articles/new">Delete article</NavItem>
         </NavDropdown>
       </NavItem>
+      
     </NavBar>
+    
   );
+  
 };
 
 export default PopulatedNavBar;

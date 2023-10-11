@@ -61,8 +61,10 @@
 // export default Articles;
 
 import { GetStaticProps, NextPage } from "next";
+import React from "react";
 import SortableTable from "../../components/table/SortableTable";
 import axios from 'axios';
+import styles from "styles/Articles.module.scss"; // Import the CSS module
 
 interface ArticlesProps {
   articles: ArticlesInterface[];
@@ -99,7 +101,24 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   return (
     <div className="container">
       <h1>Articles Index Page</h1>
-      <SortableTable headers={headers} data={articles} />
+      <table className={styles.table}> {/* Apply the CSS class */}
+        <thead>
+          <tr>
+            {headers.map((header) => (
+              <th key={header.key}>{header.label}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {articles.map((article) => (
+            <tr key={article.id} className={styles.row}> {/* Apply row style */}
+              {headers.map((header) => (
+                <td key={header.key}>{article[header.key]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

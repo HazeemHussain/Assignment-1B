@@ -77,7 +77,6 @@ const NewDiscussion = () => {
       console.error('Error sending data:', error);
     }
     
-   
   };
 
   // Some helper methods for the authors array
