@@ -1,42 +1,59 @@
-import React, { useState } from 'react';
+import React, { Key, useState } from 'react';
 import axios from 'axios';
-import SortableTable from '../components/table/SortableTable'; // Import the table component
 import styles from 'styles/Articles.module.scss'; // Import the CSS module
+import { NextPage } from 'next';
 
-interface Article {
-  _id: string;
+interface ArticlesProps {
+  articles: ArticlesInterface[];
+}
+
+interface ArticlesInterface {
+  _id: Key | null | undefined;
+  id: string;
   title: string;
   authors: string;
   source: string;
   pubYear: string;
   doi: string;
+  claim: string;
+  evidence: string;
   summary: string;
 }
 
-export default function Home() {
+const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Article[]>([]); // Annotate with the Article interface
-  const [articles, setArticles] = useState<Article[]>([]); // Annotate with the Article interface
+  const [searchResults, setSearchResults] = useState<ArticlesInterface[]>([]); // Annotate with the Article interface
   const [showSearchResults, setShowSearchResults] = useState(false); // To toggle between articles and search results
 
+  const headers: { key: keyof ArticlesInterface; label: string }[] = [
+    { key: 'title', label: 'Title' },
+    { key: 'authors', label: 'Authors' },
+    { key: 'source', label: 'Source' },
+    { key: 'pubYear', label: 'Publication Year' },
+    { key: 'doi', label: 'DOI' },
+    { key: 'claim', label: 'Claim' },
+    { key: 'evidence', label: 'Evidence' },
+  ];
 
   const handleSearch = () => {
     axios
-      .get(`/api/search?query=${searchQuery}`)
+      .get(`http://localhost:8082/api/article/search?query=${searchQuery}`)
       .then((response) => {
         setSearchResults(response.data);
         console.log(response.data);
+        setShowSearchResults(true);
       })
       .catch((error) => {
         console.error(error);
+        setShowSearchResults(false);
       });
   };
 
   return (
-    <div className="container">
+    <div className={styles.container}>
       <h1>I SHOW SPEED</h1>
 
-      <div>
+      <div className={styles['centered-search-bar']}>
         <input
           type="text"
           placeholder="Search for articles"
@@ -46,23 +63,31 @@ export default function Home() {
         <button onClick={handleSearch}>Search</button>
       </div>
 
-      {searchResults.length > 0 ? (
+      {showSearchResults ? (
         <div>
           <h2>Search Results:</h2>
-          {searchResults.map((article) => (
-            <div key={article._id}>
-              <h3>{article.title || 'Title not available'}</h3>
-              <p>Authors: {article.authors || 'Authors not available'}</p>
-              <p>Source: {article.source || 'Source not available'}</p>
-              <p>Publication Year: {article.pubYear || 'Publication Year not available'}</p>
-              <p>DOI: {article.doi || 'DOI not available'}</p>
-              <p>Summary: {article.summary || 'Summary not available'}</p>
-            </div>
-          ))}
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                {headers.map((header) => (
+                  <th key={header.key}>{header.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {searchResults.map((article) => (
+                <tr key={article._id} className={styles.row}>
+                  {headers.map((header) => (
+                    <td key={header.key}>{article[header.key]}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      ) : (
-        <p>No search results available.</p>
-      )}
+      ) : null}
     </div>
   );
-}
+};
+
+export default Articles;
