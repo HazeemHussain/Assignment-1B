@@ -27,12 +27,23 @@ router.post('/', (req, res) => {
     });
 });
 
+// router.post('/', async (req, res) => {
+//   try {
+//     const articleData = req.body;
+//     // Set the status to 'moderator' when creating a new article
+//     articleData.status = 'moderator';
 
-// router.post('/', (req, res) => {
-//   Article.create(req.body)
-//     .then(article => res.json({ msg: 'Article added successfully' }))
-//     .catch(err => res.status(400).json({ error: 'Unable to add this article', details: err }));
+//     // Create a new article with the provided data
+//     const newArticle = await Article.create(articleData);
+
+//     return res.json({ msg: 'Article added to moderator view successfully', article: newArticle });
+//   } catch (err) {
+//     console.error('Error adding article:', err);
+//     return res.status(400).json({ error: 'Unable to add this article', details: err });
+//   }
 // });
+
+
 // Creating a route for searching articles
 router.get('/search', async (req, res) => {
   const searchQuery = req.query.query; // Getting the search query from the request query params
@@ -54,6 +65,8 @@ router.get('/search', async (req, res) => {
 });
 
 module.exports = router;
+
+
 // @route DELETE api/article/:id
 // @description Delete article by id
 // @access Public
@@ -63,6 +76,4 @@ router.delete('/:id', (req, res) => {
     .catch(err => res.status(404).json({ error: 'No such an article' }));
 });
 
-
 module.exports = router;
-

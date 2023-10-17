@@ -21,10 +21,26 @@ const ArticleSchema = new mongoose.Schema({
   doi: {
     type: String
   },
+
+  claim: {
+    type: String
+  }, 
+
+  evidence: {
+    type: String
+  }, 
+
   summary: {
     type: String
   },
-  
+
+  status: {
+    type: String,
+    default: 'moderator' // Set the default status to 'moderator'
+  }
+
 });
+
+
 
 module.exports = Article = mongoose.model('article', ArticleSchema);
