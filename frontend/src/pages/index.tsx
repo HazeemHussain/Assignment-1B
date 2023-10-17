@@ -2,7 +2,6 @@ import React, { Key, useState } from 'react';
 import axios from 'axios';
 import styles from 'styles/Articles.module.scss'; // Import the CSS module
 import { NextPage } from 'next';
-import "../../../stylesFrontend/wewe.scss";
 
 interface ArticlesProps {
   articles: ArticlesInterface[];
@@ -50,13 +49,10 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
       });
   };
 
-
   return (
-    <div className="container" style={{ backgroundColor: 'blue' }}>
-      <h5>The best way to </h5>
-      <h2> browse articles</h2>
-      <img src="https://images.pexels.com/photos/4050347/pexels-photo-4050347.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" />
-      <h3> Thanks for visiting :)</h3>
+    <div className={styles.container}>
+      <h1>SPEED</h1>
+
       <div className={styles['centered-search-bar']}>
         <input
           type="text"
@@ -91,7 +87,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
         </div>
       ) : null}
     </div>
-    
   );
 };
+
 export default Articles;
