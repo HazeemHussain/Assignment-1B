@@ -1,44 +1,42 @@
 .container {
-    position: relative;
-  }
+  position: relative;
+}
 
-  .container h5 {
-    position: absolute;
-    top: 110px;
-    left: 30px;
-    font-family: Arial, sans-serif; 
-    font-size: 80px; 
-    display: block; 
-  }
+.container h5 {
+  position: absolute;
+  top: 110px;
+  left: 30px;
+  font-family: Arial, sans-serif; 
+  font-size: 80px; 
+  display: block; 
+}
 
-  .container h2 {
-    position: absolute;
-    top: 270px;
-    left: 120px;
-    font-family: Arial, sans-serif; 
-    font-size: 80px; 
-    display: block; 
-  }
-  .container h3 {
-    position: absolute;
-    top: 630px;
-    left: 620px;
-    font-family: Arial, sans-serif; 
-    font-size: 25px; 
-    display: block; 
-  }
-  
-  .container img {
-    width: 50%; 
-    height: auto; 
-    margin-top: 100px;
-    margin-right: 20px;
-    float: right; 
-  }
+.container h2 {
+  position: absolute;
+  top: 270px;
+  left: 120px;
+  font-family: Arial, sans-serif; 
+  font-size: 80px; 
+  display: block; 
+}
+.container h3 {
+  position: absolute;
+  top: 630px;
+  left: 620px;
+  font-family: Arial, sans-serif; 
+  font-size: 25px; 
+  display: block; 
+}
+
+.container img {
+  width: 50%; 
+  height: auto; 
+  margin-top: 100px;
+  margin-right: 20px;
+  float: right; 
+}
 
 
-  .display-linebreak {
-    white-space: pre-line;
-  }
-
-  
+.display-linebreak {
+  white-space: pre-line;
+}
