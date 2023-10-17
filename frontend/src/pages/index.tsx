@@ -51,12 +51,12 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   return (
     <div className={styles.container}>
-      <h1>I SHOW SPEED</h1>
+      <h1>SPEED</h1>
 
       <div className={styles['centered-search-bar']}>
         <input
           type="text"
-          placeholder="Search for articles"
+          placeholder="Enter the article name or the author name"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

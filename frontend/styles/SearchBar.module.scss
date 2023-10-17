@@ -5,19 +5,15 @@
   
     .centered-search-bar {
       margin: 0 auto; // Center the search bar horizontally
-      max-width: 1000px; // Adjust the maximum width as needed
-      justify-content: space-between;
+      max-width: 400px; // Adjust the maximum width as needed
   
       input {
-       flex: 1; 
+        width: 100%;
         padding: 10px; // Adjust the padding to make it bigger
       }
   
       button {
         padding: 10px 20px; // Adjust the padding to make it bigger
-        
-        
-        
       }
     }
   }

@@ -27,6 +27,23 @@ router.post('/', (req, res) => {
     });
 });
 
+// router.post('/', async (req, res) => {
+//   try {
+//     const articleData = req.body;
+//     // Set the status to 'moderator' when creating a new article
+//     articleData.status = 'moderator';
+
+//     // Create a new article with the provided data
+//     const newArticle = await Article.create(articleData);
+
+//     return res.json({ msg: 'Article added to moderator view successfully', article: newArticle });
+//   } catch (err) {
+//     console.error('Error adding article:', err);
+//     return res.status(400).json({ error: 'Unable to add this article', details: err });
+//   }
+// });
+
+
 // Creating a route for searching articles
 router.get('/search', async (req, res) => {
   const searchQuery = req.query.query; // Getting the search query from the request query params
