@@ -83,8 +83,7 @@ export default function SignUp() {
         
       </form>
 
-      {/* Include the LoginForm component here */}
-      {/* <LoginForm /> */}
+   
     </div>
   );
 }

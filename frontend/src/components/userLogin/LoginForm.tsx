@@ -5,56 +5,69 @@ import React, { ChangeEvent } from 'react';
 
 
 
+
 export default function LoginForm() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+  const [errorMessage, setErrorMessage] = useState('');
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const [formData, setFormData] = useState({
-        username: '',
-        password: '',
-      });
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-      const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-      };
+    try {
+      const response = await axios.post('http://localhost:8082/api/user', formData);
+      console.log(response.data); // Handle the response as needed
 
-      const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Handle form submission, e.g., send data to the server
-      };
-    
+      // If the login was successful, you can redirect the user or perform other actions.
+      if (response.status === 200) {
+        // Redirect the user to the dashboard or another page
+        // For example: window.location.href = '/dashboard';
+        setErrorMessage('logged successfully');
+      }
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error(error);
 
-    return ( 
-        <div className="Container">
-        <h1>LOG IN </h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <p>Username</p>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-          </div>
-  
-          <div>
-            <p>Password</p>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
-          </div>
-  
-        
-          <button type="submit">LogIn</button>
-          
-        </form>
-  
-        {/* Include the LoginForm component here */}
-        {/* <LoginForm /> */}
-      </div>
-    );
+      // Display an error message to the user
+      setErrorMessage('Login failed. Please check your credentials.');
+    }
+  };
+
+  return (
+    <div className="Container">
+      <h1>LOG IN</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <p>Username</p>
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div>
+          <p>Password</p>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <button type="submit">Log In</button>
+      </form>
+      
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+    </div>
+  );
 }
