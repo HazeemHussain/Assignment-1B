@@ -35,8 +35,8 @@ const ArticleSchema = new mongoose.Schema({
   },
 
   status: {
-    type: String,
-    default: 'moderator' // Set the default status to 'moderator'
+    type: Boolean,
+    default: 'false' // Set the default status to 'moderator'
   }
 
 });

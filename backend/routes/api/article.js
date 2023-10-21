@@ -66,14 +66,43 @@ router.get('/search', async (req, res) => {
 
 module.exports = router;
 
+router.put('/article/:id', async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    article.status = true; // Approve the article
+    await article.save();
+    res.json({ message: 'Article approved' });
+  } catch (error) {
+    console.error('Error approving article:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Endpoint to decline an article
+router.delete('/articles/:id', async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    await article.remove(); // Remove the article
+    res.json({ message: 'Article declined' });
+  } catch (error) {
+    console.error('Error declining article:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 // @route DELETE api/article/:id
 // @description Delete article by id
 // @access Public
-router.delete('/:id', (req, res) => {
-  Article.findByIdAndRemove(req.params.id, req.body)
-    .then(article => res.json({ msg: 'Article entry deleted successfully' }))
-    .catch(err => res.status(404).json({ error: 'No such an article' }));
-});
+// router.delete('article/:id', (req, res) => {
+//   Article.findByIdAndRemove(req.params.id, req.body)
+//     .then(article => res.json({ msg: 'Article entry deleted successfully' }))
+//     .catch(err => res.status(404).json({ error: 'No such an article' }));
+// });
 
 module.exports = router;

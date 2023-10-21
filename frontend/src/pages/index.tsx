@@ -3,6 +3,8 @@ import axios from 'axios';
 import styles from 'styles/Articles.module.scss'; // Import the CSS module
 import { NextPage } from 'next';
 
+//Home page
+
 interface ArticlesProps {
   articles: ArticlesInterface[];
 }
