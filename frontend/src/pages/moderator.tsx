@@ -41,7 +41,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   const handleApprove = (articleId: string) => {
     // Display a confirmation dialog
     //const url = `${process.env.NEXT_PUBLIC_API_URL}/api/article/approve/${articleId}`;
-   // console.log('Request URL:', url); // Log the URL
+    // console.log('Request URL:', url); // Log the URL
     console.log('Article ID to be approved', articleId);
 
     //Asking moderation for confirmation of the article
@@ -133,6 +133,8 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
     // Fetch articles from your backend API
     const response = await axios.get(`${config.apiUrl}api/article`);
     const articles: ArticlesInterface[] = response.data;
+    //Calling only the articles can only been seen by moderator
+    const approvedArticles = articles.filter(article => article.status === false);
 
     return {
       props: {

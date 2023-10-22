@@ -125,12 +125,12 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
     const response = await axios.get(`${config.apiUrl}api/article`);
     const articles: ArticlesInterface[] = response.data;
 
-    // Log the articles to the console to check if the id field is present
-    //console.log('Articles received through props:', articles);
+    //Calling only the articles can only been seen by analyst
+    const approvedArticles = articles.filter(article => article.status === true);
 
     return {
       props: {
-        articles,
+        articles: approvedArticles,
       },
     };
   } catch (error) {
