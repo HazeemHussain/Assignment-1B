@@ -14,17 +14,17 @@ const PopulatedNavBar = () => {
       <NavItem route="/" end>
         Home
       </NavItem>
+        <NavItem route="/articles/">View articles</NavItem>
+        <NavItem route="/articles/new">Add new Article</NavItem>
       
-      
-      <NavItem route="/articles">Moderator</NavItem>
-      <NavItem route="/articles">Analyst</NavItem>
-      <NavItem route="/articles/sign_up">Sign Up</NavItem>
+ 
       <NavItem dropdown route="/articles">
-        Articles <IoMdArrowDropdown />
+        Login <IoMdArrowDropdown />
         <NavDropdown>
-          <NavItem route="/articles/">View articles</NavItem>
-          <NavItem route="/articles">Search articles</NavItem>
-          <NavItem route="/articles/new">Add new Article</NavItem>
+        <NavItem route="/articles">Moderator</NavItem>
+       <NavItem route="/articles">Analyst</NavItem>
+     
+
         </NavDropdown>
       </NavItem>
       
