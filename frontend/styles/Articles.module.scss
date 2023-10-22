@@ -1,0 +1,52 @@
+/* Articles.module.scss */
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+  
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+    }
+  
+    th {
+      background-color: #f2f2f2;
+    }
+  
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  
+    &:hover {
+      background-color: #ddd;
+    }
+  }
+  
+  .container {
+    text-align: center;
+    margin: 0 auto; // Center the container horizontally
+    padding: 20px;
+  
+    .centered-search-bar {
+      margin: 0 auto; // Center the search bar horizontally
+      max-width: 1000px; // Adjust the maximum width as needed
+      justify-content: space-between;
+  
+      input {
+       flex: 1; 
+        padding: 10px; // Adjust the padding to make it bigger
+      }
+  
+      button {
+        padding: 10px 20px; // Adjust the padding to make it bigger
+  
+  
+  
+      }
+    }
+  }
+  
+ 

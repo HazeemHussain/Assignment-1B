@@ -15,7 +15,7 @@ export default function ModeratorPage() {
      
 
       {loggedIn ? (
-        <ModeratorView />
+        <ModeratorView/>
       ) : (
         <LoginForm onLoginSuccess={handleLoginSuccess} /> // Pass the callback as a prop
       )}

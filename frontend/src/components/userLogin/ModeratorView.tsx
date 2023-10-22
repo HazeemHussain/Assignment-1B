@@ -1,4 +1,4 @@
-export default function ModeratorPage() {
+export default function ModeratorView() {
     return (
       <div className="container">
         <h1>Moderator View </h1>
