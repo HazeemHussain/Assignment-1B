@@ -3,7 +3,7 @@ import React, { useState, useEffect, ChangeEvent } from "react";
 import axios from 'axios';
 import styles from "styles/Articles.module.scss"; // Import the CSS module
 import config from "../config";
-
+import LoginForm from "@/components/userLogin/LoginForm";
 
 interface ArticlesProps {
   articles: ArticlesInterface[];
@@ -29,6 +29,12 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   const [moderatedArticles, setModeratedArticles] = useState(unapprovedArticles);
 
+
+  //for log in
+  const [loggedIn, setLoggedIn] = useState(false); // State to track login status
+  const handleLoginSuccess = () => {
+    setLoggedIn(true);
+  };
 
   const headers: { key: keyof ArticlesInterface; label: string }[] = [
     //{ key: "id", label: "ID" },
@@ -76,7 +82,10 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
     }
   };
 
-
+  //Logging in functionality
+  if (!loggedIn) {
+    return <LoginForm onLoginSuccess={handleLoginSuccess} />;
+  }
 
   return (
     <div className="container">
