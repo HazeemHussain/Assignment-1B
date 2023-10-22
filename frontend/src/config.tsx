@@ -1,5 +1,5 @@
 const config = {
-    apiUrl: 'https://heroku-backend-7dc82c748eea.herokuapp.com',
+    apiUrl: 'https://heroku-backend-02667c8099a4.herokuapp.com/',
 };
 
 export default config;
