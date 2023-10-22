@@ -1,4 +1,4 @@
-import SignUp from "./login/sign_up";
+
 
 export default function Home() {
   return (

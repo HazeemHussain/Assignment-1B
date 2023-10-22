@@ -9,10 +9,7 @@ const PopulatedNavBar = () => {
   return (
     <NavBar>
       <NavItem>SPEED</NavItem>
-
-     <NavItem route="/login/sign_up" end>
-        Sign Up
-      </NavItem>  
+ 
       <NavItem route="/moderator" end>
         Moderator
       </NavItem>
