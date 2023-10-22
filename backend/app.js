@@ -6,6 +6,7 @@ const cors = require('cors');
 
 // routes
 const articles = require('./routes/api/article');
+const users = require('./routes/api/user');
 
 const app = express();
 
