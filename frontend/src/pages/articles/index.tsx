@@ -68,7 +68,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get('${process.env.NEXT_PUBLIC_API_URL}/api/article'); // Replace with your actual API endpoint
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article`); // Replace with your actual API endpoint
     const articles: ArticlesInterface[] = response.data;
     const approvedArticles = articles.filter(article => article.analystStatus === true);
 

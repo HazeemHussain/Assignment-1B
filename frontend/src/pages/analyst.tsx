@@ -121,7 +121,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get('${process.env.NEXT_PUBLIC_API_URL}/api/article');
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article`);
     const articles: ArticlesInterface[] = response.data;
 
     // Log the articles to the console to check if the id field is present

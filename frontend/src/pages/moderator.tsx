@@ -72,7 +72,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
         method: 'DELETE',
       })
 
-      //if an error is returned
+        //if an error is returned
         .then((response) => {
           console.log('Response status:', response.status);
           if (!response.ok) {
@@ -130,7 +130,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get('${process.env.NEXT_PUBLIC_API_URL}/api/article');
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article`);
     const articles: ArticlesInterface[] = response.data;
 
     return {
