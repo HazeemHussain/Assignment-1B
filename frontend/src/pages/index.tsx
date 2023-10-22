@@ -40,7 +40,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   const handleSearch = () => {
     axios
-      .get(`${config.apiUrl}/api/article/search?query=${searchQuery}`)
+      .get(`${config.apiUrl}api/article/search?query=${searchQuery}`)
       .then((response) => {
         setSearchResults(response.data);
         console.log(response.data);
