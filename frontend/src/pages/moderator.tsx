@@ -31,7 +31,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   const handleLoginSuccess = () => {
     setLoggedIn(true);
   };
-  
+
 
   const headers: { key: keyof ArticlesInterface; label: string }[] = [
     //{ key: "id", label: "ID" },
@@ -149,7 +149,7 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
 
     return {
       props: {
-        articles,
+        articles: approvedArticles,
       },
     };
   } catch (error) {
