@@ -8,7 +8,7 @@ interface ArticlesProps {
 }
 
 interface ArticlesInterface {
-  id: string;
+  _id: string; //using the _id property to get the id of the articles from mongodb
   title: string;
   authors: string;
   source: string;
@@ -20,9 +20,13 @@ interface ArticlesInterface {
 }
 
 const Articles: NextPage<ArticlesProps> = ({ articles }) => {
-  const [moderatedArticles, setModeratedArticles] = useState(articles);
+
+  const unapprovedArticles = articles.filter(article => article.status === false); // Only articles with status false
+  const [moderatedArticles, setModeratedArticles] = useState(unapprovedArticles);
+
 
   const headers: { key: keyof ArticlesInterface; label: string }[] = [
+    //{ key: "id", label: "ID" },
     { key: "title", label: "Title" },
     { key: "authors", label: "Authors" },
     { key: "source", label: "Source" },
@@ -33,32 +37,56 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   ];
 
   const handleApprove = (articleId: string) => {
-    // Send a request to your backend to update the status to "true"
-    axios.put(`http://localhost:8082/api/articles${articleId}`)
-      .then(() => {
-        // Remove the approved article from the moderatedArticles state
-        setModeratedArticles((articles) => articles.filter((article) => article.id !== articleId));
-      })
-      .catch((error) => {
-        console.error('Error approving article:', error);
-      });
+    // Display a confirmation dialog
+    const url = `http://localhost:8082/api/article/approve/${articleId}`;
+    console.log('Request URL:', url); // Log the URL
+    console.log('Article ID to be approved', articleId);
+
+    const confirmApproval = window.confirm("Are you sure you want to approve this article?");
+
+    if (confirmApproval) {
+      axios.put(`http://localhost:8082/api/article/${articleId}`)
+        .then(response => {
+          console.log('Response:', response.data); // Log the response
+          setModeratedArticles(articles => articles.filter(article => article._id !== articleId));
+          alert("Article sent to analyst for review");
+        })
+        .catch(error => {
+          console.error('Error approving article:', error);
+        });
+    }
   };
 
   const handleDecline = (articleId: string) => {
-    // Send a request to your backend to decline or remove the article
-    axios.delete(`http://localhost:8082/api/articles${articleId}`)
+    console.log("Article Id to be removed", articleId);
+
+    fetch(`http://localhost:8082/api/article/${articleId}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+          console.error('Network response was not ok');
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then(() => {
-        // Remove the declined article from the moderatedArticles state
-        setModeratedArticles((articles) => articles.filter((article) => article.id !== articleId));
+        console.log('Article successfully declined');
+        // Update your UI as needed, e.g., remove the article from the list
+        // You can use setModeratedArticles to update your list of articles
+        setModeratedArticles(prevArticles => prevArticles.filter(article => article._id !== articleId));
       })
       .catch((error) => {
         console.error('Error declining article:', error);
+        console.log("The id is ", articleId);
       });
   };
 
+
   return (
     <div className="container">
-      <h1>Articles Index Page</h1>
+      <h1>Moderator View Page</h1>
       <table className={styles.table}>
         <thead>
           <tr>
@@ -70,13 +98,13 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
         </thead>
         <tbody>
           {moderatedArticles.map((article) => (
-            <tr key={article.id} className={styles.row}>
+            <tr key={article._id} className={styles.row}>
               {headers.map((header) => (
                 <td key={header.key}>{article[header.key]}</td>
               ))}
               <td>
-                <button onClick={() => handleApprove(article.id)}>Approve</button>
-                <button onClick={() => handleDecline(article.id)}>Decline</button>
+                <button onClick={() => handleApprove(article._id)}>Approve</button>
+                <button onClick={() => handleDecline(article._id)}>Decline</button>
               </td>
             </tr>
           ))}
@@ -84,13 +112,17 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
       </table>
     </div>
   );
+
 };
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get('http://localhost:8082/api/article'); // Replace with your actual API endpoint
+    const response = await axios.get('http://localhost:8082/api/article');
     const articles: ArticlesInterface[] = response.data;
+
+    // Log the articles to the console to check if the id field is present
+    //console.log('Articles received through props:', articles);
 
     return {
       props: {
@@ -99,7 +131,6 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
     };
   } catch (error) {
     console.error('Error fetching data:', error);
-
     return {
       props: {
         articles: [],
@@ -107,5 +138,6 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
     };
   }
 };
+
 
 export default Articles;

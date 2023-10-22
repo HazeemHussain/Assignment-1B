@@ -1,5 +1,10 @@
 const express = require('express');
+const cors = require('cors'); // Import the CORS middleware
+const app = express(); // Create an Express app instance
 const router = express.Router();
+const { ObjectId } = require('mongoose').Types;
+
+
 
 // Load Article model
 const Article = require('../../models/article');
@@ -13,10 +18,11 @@ router.get('/test', (req, res) => res.send('article route testing!'));
 // @description Get all articles
 // @access Public
 router.get('/', (req, res) => {
-  Article.find()
+  Article.find({}, { _id: 1, title: 1, authors: 1, source: 1, pubYear: 1, doi: 1, claim: 1, evidence: 1, status: 1 })
     .then(articles => res.json(articles))
     .catch(err => res.status(404).json({ noarticlesfound: 'No Articles found' }));
 });
+
 
 router.post('/', (req, res) => {
   Article.create(req.body)
@@ -27,26 +33,11 @@ router.post('/', (req, res) => {
     });
 });
 
-// router.post('/', async (req, res) => {
-//   try {
-//     const articleData = req.body;
-//     // Set the status to 'moderator' when creating a new article
-//     articleData.status = 'moderator';
-
-//     // Create a new article with the provided data
-//     const newArticle = await Article.create(articleData);
-
-//     return res.json({ msg: 'Article added to moderator view successfully', article: newArticle });
-//   } catch (err) {
-//     console.error('Error adding article:', err);
-//     return res.status(400).json({ error: 'Unable to add this article', details: err });
-//   }
-// });
-
 
 // Creating a route for searching articles
 router.get('/search', async (req, res) => {
   const searchQuery = req.query.query; // Getting the search query from the request query params
+  //console.log("displaying search", searchQuery);
 
   try {
     // Search for articles with matching title or author name
@@ -64,16 +55,30 @@ router.get('/search', async (req, res) => {
   }
 });
 
-module.exports = router;
 
-router.put('/article/:id', async (req, res) => {
+// Endpoint to approve an article
+//thats how the route is supposed to set up
+router.put('/:articleId', async (req, res) => {
   try {
-    const article = await Article.findById(req.params.id);
+
+    // thats how you do it. watch out for the article id
+    const articleId = new ObjectId(req.params.articleId); //thats out the constant is supposed 
+
+    console.log('Received articleId:', articleId);
+
+    const article = await Article.findById(articleId);
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
+    
     article.status = true; // Approve the article
     await article.save();
+    
+    console.log('Article approved with ID:', articleId);
+
+    // Log the updated article
+    console.log('Updated Article:', article);
+
     res.json({ message: 'Article approved' });
   } catch (error) {
     console.error('Error approving article:', error);
@@ -81,28 +86,31 @@ router.put('/article/:id', async (req, res) => {
   }
 });
 
-// Endpoint to decline an article
-router.delete('/articles/:id', async (req, res) => {
+// Delete an article by ID
+router.delete('/:articleId', async (req, res) => {
+  const articleId = new ObjectId(req.params.articleId);
   try {
-    const article = await Article.findById(req.params.id);
+    
+    const article = await Article.findByIdAndRemove(articleId);
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
-    await article.remove(); // Remove the article
-    res.json({ message: 'Article declined' });
+    res.json({ message: 'Article deleted' });
   } catch (error) {
-    console.error('Error declining article:', error);
+    console.error('Error deleting article:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
+
 // @route DELETE api/article/:id
 // @description Delete article by id
 // @access Public
-// router.delete('article/:id', (req, res) => {
+// router.delete('/article/:id', (req, res) => {
 //   Article.findByIdAndRemove(req.params.id, req.body)
 //     .then(article => res.json({ msg: 'Article entry deleted successfully' }))
 //     .catch(err => res.status(404).json({ error: 'No such an article' }));
 // });
+
 
 module.exports = router;
