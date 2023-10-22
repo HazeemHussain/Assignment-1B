@@ -2,6 +2,7 @@ import { GetStaticProps, NextPage } from "next";
 import React, { useState, useEffect, ChangeEvent } from "react";
 import axios from 'axios';
 import styles from "styles/Articles.module.scss"; // Import the CSS module
+import config from "../config";
 
 
 interface ArticlesProps {
@@ -42,7 +43,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   const handleSummaryChange = (e: ChangeEvent<HTMLTextAreaElement>, articleId: string) => {
     const updatedArticles = moderatedArticles.map(article => {
-      if (article._id === articleId) { 
+      if (article._id === articleId) {
         return { ...article, summary: e.target.value };
       }
       return article;
@@ -52,7 +53,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   //This method is called when the analyst clicks on the save button to summary of the article
   const handleSummarySave = async (articleId: string) => {
-    const article = moderatedArticles.find(a => a._id === articleId); 
+    const article = moderatedArticles.find(a => a._id === articleId);
     if (article) {
       // Check if the summary is not blank
       if (!article.summary.trim()) {
@@ -63,7 +64,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
       try {
 
         //Saving the summary that the analyst entered to the database
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/article/update-summary/${articleId}`, { 
+        await axios.put(`${config.apiUrl}/api/article/update-summary/${articleId}`, {
           summary: article.summary,
         });
         alert('Summary saved!');
@@ -121,7 +122,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article`);
+    const response = await axios.get(`${config.apiUrl}/api/article`);
     const articles: ArticlesInterface[] = response.data;
 
     // Log the articles to the console to check if the id field is present
