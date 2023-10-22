@@ -36,16 +36,18 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
     { key: "evidence", label: "Evidence" },
   ];
 
+  //Function that is called when the user clicks on the approve button to approve the article
   const handleApprove = (articleId: string) => {
     // Display a confirmation dialog
-    const url = `http://localhost:8082/api/article/approve/${articleId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/article/approve/${articleId}`;
     console.log('Request URL:', url); // Log the URL
     console.log('Article ID to be approved', articleId);
 
+    //Asking moderation for confirmation of the article
     const confirmApproval = window.confirm("Are you sure you want to approve this article?");
 
     if (confirmApproval) {
-      axios.put(`http://localhost:8082/api/article/${articleId}`)
+      axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${articleId}`)
         .then(response => {
           console.log('Response:', response.data); // Log the response
           setModeratedArticles(articles => articles.filter(article => article._id !== articleId));
@@ -57,30 +59,40 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
     }
   };
 
+  //Function that is called when the user clicks on the decline button to decline the article
   const handleDecline = (articleId: string) => {
     console.log("Article Id to be removed", articleId);
 
-    fetch(`http://localhost:8082/api/article/${articleId}`, {
-      method: 'DELETE',
-    })
-      .then((response) => {
-        console.log('Response status:', response.status);
-        if (!response.ok) {
-          console.error('Network response was not ok');
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
+    //Asking the moderator for confirmation of the article
+    const confirmApproval = window.confirm("Are you sure you want to decline this article?");
+
+    if (confirmApproval) {
+
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${articleId}`, {
+        method: 'DELETE',
       })
-      .then(() => {
-        console.log('Article successfully declined');
-        // Update your UI as needed, e.g., remove the article from the list
-        // You can use setModeratedArticles to update your list of articles
-        setModeratedArticles(prevArticles => prevArticles.filter(article => article._id !== articleId));
-      })
-      .catch((error) => {
-        console.error('Error declining article:', error);
-        console.log("The id is ", articleId);
-      });
+
+      //if an error is returned
+        .then((response) => {
+          console.log('Response status:', response.status);
+          if (!response.ok) {
+            console.error('Network response was not ok');
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(() => {
+          console.log('Article successfully declined');
+
+          //Deleting the article when the user clicks on the decline button
+          setModeratedArticles(prevArticles => prevArticles.filter(article => article._id !== articleId));
+        })
+        .catch((error) => {
+          console.error('Error declining article:', error);
+          console.log("The id is ", articleId);
+        });
+
+    }
   };
 
 
@@ -118,11 +130,8 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get('http://localhost:8082/api/article');
+    const response = await axios.get('${process.env.NEXT_PUBLIC_API_URL}/api/article');
     const articles: ArticlesInterface[] = response.data;
-
-    // Log the articles to the console to check if the id field is present
-    //console.log('Articles received through props:', articles);
 
     return {
       props: {
