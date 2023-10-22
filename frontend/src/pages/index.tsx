@@ -53,7 +53,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   return (
     <div className={styles.container}>
-      <h1>SPEED</h1>
+      <h1>Search Article</h1>
 
       <div className={styles['centered-search-bar']}>
         <input
