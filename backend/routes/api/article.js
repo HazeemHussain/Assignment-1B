@@ -14,11 +14,12 @@ const Article = require('../../models/article');
 // @access Public
 router.get('/test', (req, res) => res.send('article route testing!'));
 
-// @route GET api/books
+
 // @description Get all articles
-// @access Public
 router.get('/', (req, res) => {
-  Article.find({}, { _id: 1, title: 1, authors: 1, source: 1, pubYear: 1, doi: 1, claim: 1, evidence: 1, status: 1 })
+
+  //Calling the classes i need
+  Article.find({}, { _id: 1, title: 1, authors: 1, source: 1, pubYear: 1, doi: 1, claim: 1, evidence: 1, summary: 1, analystStatus: 1, status: 1})
     .then(articles => res.json(articles))
     .catch(err => res.status(404).json({ noarticlesfound: 'No Articles found' }));
 });
@@ -82,6 +83,28 @@ router.put('/:articleId', async (req, res) => {
     res.json({ message: 'Article approved' });
   } catch (error) {
     console.error('Error approving article:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+//Adding summary for the article
+router.put('/update-summary/:articleId', async (req, res) => {
+  try {
+    const articleId = new ObjectId(req.params.articleId);
+    const updatedFields = {
+      summary: req.body.summary,
+      analystStatus: true
+    };
+
+    const updatedArticle = await Article.findByIdAndUpdate(articleId, updatedFields, { new: true });
+
+    if (!updatedArticle) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+
+    res.json({ message: 'Article updated', article: updatedArticle });
+  } catch (error) {
+    console.error('Error updating article:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
