@@ -1,16 +1,16 @@
-import { GetStaticProps, NextPage } from "next";
-import React from "react";
-import SortableTable from "../../components/table/SortableTable";
+import React, { Key, useState } from 'react';
 import axios from 'axios';
-import styles from "styles/Articles.module.scss"; // Import the CSS module
+import styles from 'styles/Articles.module.scss'; // Import the CSS module
+import { NextPage } from 'next';
+
+//Home page
 
 interface ArticlesProps {
   articles: ArticlesInterface[];
 }
 
-//it define the structure of an article. it specifies the properties of the articles'
-//should have. Eg id: what is expected to be a string
 interface ArticlesInterface {
+  _id: Key | null | undefined;
   id: string;
   title: string;
   authors: string;
@@ -19,68 +19,77 @@ interface ArticlesInterface {
   doi: string;
   claim: string;
   evidence: string;
+  summary: string;
 }
 
-
-//Headers is an array of objects that defines the header of the table. Each
-//header has 2 properties. Key defines the articles interface and the label defines
-// the label the heading that it will display on the website
 const Articles: NextPage<ArticlesProps> = ({ articles }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<ArticlesInterface[]>([]); // Annotate with the Article interface
+  const [showSearchResults, setShowSearchResults] = useState(false); // To toggle between articles and search results
+
   const headers: { key: keyof ArticlesInterface; label: string }[] = [
-    { key: "title", label: "Title" },
-    { key: "authors", label: "Authors" },
-    { key: "source", label: "Source" },
-    { key: "pubYear", label: "Publication Year" },
-    { key: "doi", label: "DOI" },
-    { key: "claim", label: "Claim" },
-    { key: "evidence", label: "Evidence" },
+    { key: 'title', label: 'Title' },
+    { key: 'authors', label: 'Authors' },
+    { key: 'source', label: 'Source' },
+    { key: 'pubYear', label: 'Publication Year' },
+    { key: 'doi', label: 'DOI' },
+    { key: 'claim', label: 'Claim' },
+    { key: 'evidence', label: 'Evidence' },
   ];
 
+  const handleSearch = () => {
+    axios
+      .get(`http://localhost:8082/api/article/search?query=${searchQuery}`)
+      .then((response) => {
+        setSearchResults(response.data);
+        console.log(response.data);
+        setShowSearchResults(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        setShowSearchResults(false);
+      });
+  };
+
   return (
-    <div className="container">
-      <h1>Articles Index Page</h1>
-      <table className={styles.table}> {/* Apply the CSS class */}
-        <thead>
-          <tr>
-            {headers.map((header) => (
-              <th key={header.key}>{header.label}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {articles.map((article) => (
-            <tr key={article.id} className={styles.row}> {/* Apply row style */}
-              {headers.map((header) => (
-                <td key={header.key}>{article[header.key]}</td>
+    <div className={styles.container}>
+      <h1>SPEED</h1>
+
+      <div className={styles['centered-search-bar']}>
+        <input
+          type="text"
+          placeholder="Enter the article name or the author name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
+
+      {showSearchResults ? (
+        <div>
+          <h2>Search Results:</h2>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                {headers.map((header) => (
+                  <th key={header.key}>{header.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {searchResults.map((article) => (
+                <tr key={article._id} className={styles.row}>
+                  {headers.map((header) => (
+                    <td key={header.key}>{article[header.key]}</td>
+                  ))}
+                </tr>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </div>
   );
-};
-
-export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
-  try {
-    // Fetch articles from your backend API
-    const response = await axios.get('http://localhost:8082/api/article'); // Replace with your actual API endpoint
-    const articles: ArticlesInterface[] = response.data;
-
-    return {
-      props: {
-        articles,
-      },
-    };
-  } catch (error) {
-    console.error('Error fetching data:', error);
-
-    return {
-      props: {
-        articles: [],
-      },
-    };
-  }
 };
 
 export default Articles;
