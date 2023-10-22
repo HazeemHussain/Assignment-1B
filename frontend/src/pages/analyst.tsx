@@ -64,7 +64,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
       try {
 
         //Saving the summary that the analyst entered to the database
-        await axios.put(`${config.apiUrl}/api/article/update-summary/${articleId}`, {
+        await axios.put(`${config.apiUrl}api/article/update-summary/${articleId}`, {
           summary: article.summary,
         });
         alert('Summary saved!');
@@ -122,7 +122,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get(`${config.apiUrl}/api/article`);
+    const response = await axios.get(`${config.apiUrl}api/article`);
     const articles: ArticlesInterface[] = response.data;
 
     // Log the articles to the console to check if the id field is present

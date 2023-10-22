@@ -54,7 +54,7 @@ const NewDiscussion = () => {
 
       setTimeout(async () => {
         // Send the form data to your backend API
-        const response = await axios.post(`${config.apiUrl}/api/article`, formData);
+        const response = await axios.post(`${config.apiUrl}api/article`, formData);
 
 
         // console.log('Data sent successfully:', response.data);

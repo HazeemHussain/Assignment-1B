@@ -48,7 +48,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
     const confirmApproval = window.confirm("Are you sure you want to approve this article?");
 
     if (confirmApproval) {
-      axios.put(`${config.apiUrl}/api/article/${articleId}`)
+      axios.put(`${config.apiUrl}api/article/${articleId}`)
         .then(response => {
           console.log('Response:', response.data); // Log the response
           setModeratedArticles(articles => articles.filter(article => article._id !== articleId));
@@ -69,7 +69,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
     if (confirmApproval) {
 
-      fetch(`${config.apiUrl}/api/article/${articleId}`, {
+      fetch(`${config.apiUrl}api/article/${articleId}`, {
         method: 'DELETE',
       })
 
@@ -131,7 +131,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get(`${config.apiUrl}/api/article`);
+    const response = await axios.get(`${config.apiUrl}api/article`);
     const articles: ArticlesInterface[] = response.data;
 
     return {
