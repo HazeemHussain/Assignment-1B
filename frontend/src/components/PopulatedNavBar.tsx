@@ -8,25 +8,17 @@ const PopulatedNavBar = () => {
   return (
     <NavBar>
       <NavItem>SPEED</NavItem>
-
-      <NavItem route="/login/sign_up" end>
-        Sign Up
-      </NavItem>
-      <NavItem route="/moderator" end>
-        Moderator
-      </NavItem>
-      <NavItem route="/analyst" end>
-        Analyst
-      </NavItem>
       <NavItem route="/" end>
         Home
       </NavItem>
+        <NavItem route="/articles/">View articles</NavItem>
+        <NavItem route="/articles/new">Add new Article</NavItem>
+
       <NavItem dropdown route="/articles">
-        Articles <IoMdArrowDropdown />
+        Login <IoMdArrowDropdown />
         <NavDropdown>
-          <NavItem route="/articles">View articles</NavItem>
-          <NavItem route="/articles/new">Add new Article</NavItem>
-          <NavItem route="/articles/new">Delete article</NavItem>
+        <NavItem route="/moderator">Moderator</NavItem>
+       <NavItem route="/analyst">Analyst</NavItem>
         </NavDropdown>
       </NavItem>
     </NavBar>
