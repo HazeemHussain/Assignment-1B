@@ -19,6 +19,8 @@ interface ArticlesInterface {
   doi: string;
   claim: string;
   evidence: string;
+  summary: string;
+  analystStatus: boolean;
 }
 
 
@@ -34,6 +36,8 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
     { key: "doi", label: "DOI" },
     { key: "claim", label: "Claim" },
     { key: "evidence", label: "Evidence" },
+    { key: "summary", label: "Summary" },
+
   ];
 
   return (
@@ -66,10 +70,11 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
     // Fetch articles from your backend API
     const response = await axios.get('http://localhost:8082/api/article'); // Replace with your actual API endpoint
     const articles: ArticlesInterface[] = response.data;
+    const approvedArticles = articles.filter(article => article.analystStatus === true);
 
     return {
       props: {
-        articles,
+        articles: approvedArticles, // Use approvedArticles here instead of articles
       },
     };
   } catch (error) {
@@ -84,3 +89,4 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
 };
 
 export default Articles;
+
