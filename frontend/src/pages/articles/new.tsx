@@ -1,13 +1,17 @@
 import { FormEvent, useState } from "react";
 import formStyles from "../../../styles/Form.module.scss";
 import axios from 'axios';
+import { useEffect } from "react";
 
+//Submit New 
 const NewDiscussion = () => {
   const [title, setTitle] = useState("");
   const [authors, setAuthors] = useState<string[]>([]);
   const [source, setSource] = useState("");
   const [pubYear, setPubYear] = useState<number>(0);
   const [doi, setDoi] = useState("");
+  const [claim, setClaim] = useState("");
+  const [evidence, setEvidence] = useState("");
   const [summary, setSummary] = useState("");
   const [linkedDiscussion, setLinkedDiscussion] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -19,61 +23,78 @@ const NewDiscussion = () => {
 
   // This function handles the form submission
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-     event.preventDefault();
-
+    event.preventDefault();
 
 
     //|| !source || !doi || !summary || !linkedDiscussion
     if (!title || authors.length === 0) {
-      setErrorMessage('Please enter the title of the article and author name');
-      return; 
-    } 
+      //setErrorMessage('Please enter the title of the article and author name');
+      window.alert("Please enter the title of the article and author name")
+      return;
+    }
 
+    // Create an object with the form data
+    const formData = {
+      title,
+      authors: authorsString, // Send the authors as a string
+      source,
+      pubYear,
+      doi,
+      claim,
+      evidence,
+      summary,
+      linkedDiscussion,
+    };
 
+    try {
+      setIsSubmitting(true);
 
-      // Create an object with the form data
-      const formData = {
-        title,
-        authors: authorsString, // Send the authors as a string
-        source,
-        pubYear,
-        doi,
-        summary,
-        linkedDiscussion,
-      };
-      try {
+      //console.log("Button text set to 'Submitting...'"); // Add this line
+
+      setTimeout(async () => {
         // Send the form data to your backend API
         const response = await axios.post('http://localhost:8082/api/article', formData);
 
-        console.log('Data sent successfully:', response.data);
-        window.location.reload();
-        // Start the animation
-        setIsSubmitting(true);
 
-        // Simulate form submission (replace with your actual form submission logic)
+        // console.log('Data sent successfully:', response.data);
+
+        // const response = await axios.post('http://localhost:8082/api/article?moderator=true', formData);
+
+        console.log('Data sent successfully to moderator view:', response.data);
+
+        // After successful submission, set "Submitted"
+        setIsSuccess(true);
+        // console.log("Set isSuccess to true"); // Add this line
+
+        // Reset back to "Submit" after 1 second
         setTimeout(() => {
-          // Stop the animation after a delay (you can adjust the delay as needed)
           setIsSubmitting(false);
-
-          // If the submission is successful, show the success message
-          setIsSuccess(true);
-
-          resetSuccessMessage();
-          // Clear the form fields
           setTitle("");
           setAuthors([]);
           setSource("");
           setPubYear(0);
           setDoi("");
-          setSummary("");
-          setLinkedDiscussion("");
-        }, 1000); // Adjust the delay as needed
-      } catch (error) {
-        console.error('Error sending data:', error);
-      }
-    
+          setClaim("");
+          setEvidence("");
 
-  }
+
+          //setSummary("");
+          // setLinkedDiscussion("");
+
+          // Reload the page after 1 second
+          setTimeout(() => {
+
+            window.alert("Article submitted for review")
+            window.location.reload();
+
+          }, 200);
+        }, 500);
+      }, 200);
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
+
+  };
 
   // Some helper methods for the authors array
   // Function to add an author to the list
@@ -190,6 +211,33 @@ const NewDiscussion = () => {
           placeholder="Enter the DOI"
         />
 
+        <label htmlFor="Claim">Claim:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          name="claim"
+          id="Claim"
+          value={claim}
+          onChange={(event) => {
+            setClaim(event.target.value);
+          }}
+          placeholder="Enter the Claim"
+        />
+
+        <label htmlFor="Evidence">Evidence:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          name="evidence"
+          id="Evidence"
+          value={evidence}
+          onChange={(event) => {
+            setEvidence(event.target.value);
+          }}
+          placeholder="Enter the Evidence"
+        />
+
+        {/*
         <label htmlFor="summary">Summary:</label>
         <textarea
           className={formStyles.formTextArea}
@@ -198,6 +246,7 @@ const NewDiscussion = () => {
           onChange={(event) => setSummary(event.target.value)}
           placeholder="Enter the summary"
         />
+        */}
 
         <button
           className={`${formStyles.formItem} ${isSubmitting ? formStyles.animatePulse : ""

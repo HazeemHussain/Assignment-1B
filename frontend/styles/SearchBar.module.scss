@@ -1,0 +1,19 @@
+.container {
+    text-align: center;
+    margin: 0 auto; // Center the container horizontally
+    padding: 20px;
+  
+    .centered-search-bar {
+      margin: 0 auto; // Center the search bar horizontally
+      max-width: 400px; // Adjust the maximum width as needed
+  
+      input {
+        width: 100%;
+        padding: 10px; // Adjust the padding to make it bigger
+      }
+  
+      button {
+        padding: 10px 20px; // Adjust the padding to make it bigger
+      }
+    }
+  }
