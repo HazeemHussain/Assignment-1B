@@ -1,89 +1,89 @@
-import React, { ChangeEvent } from 'react'
-import LoginForm from '@/components/userLogin/LoginForm';
-import { FormEvent, useState } from "react";
-import formStyles from "../../../styles/Form.module.scss";
+
 import axios from 'axios';
 import { useEffect } from "react";
+import { FormEvent, useState } from "react";
+import React, { ChangeEvent } from 'react';
 
 
-export default function SignUp() {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    email: '',
-    user: '',
-  });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+export default function login() {
 
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const {name, value} = e.target;
-    setFormData({...formData, [name]: value});  }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle form submission, e.g., send data to the server
-  };
+    const [formData, setFormData] = useState({
+      username: '',
+      password: '',
+    });
+    const [errorMessage, setErrorMessage] = useState('');
+  
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData({ ...formData, [name]: value });
+    };
+  
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+  
+      try {
+        const response = await axios.post('http://localhost:8082/api/user', formData);
+        console.log(response.data); // Handle the response as needed
+  
+        // If the login was successful, you can redirect the user or perform other actions.
+        if (response.status === 200) {
+          // Redirect the user to the dashboard or another page
+          // For example: window.location.href = '/dashboard';
+          if(formData.username === 'Moderator' && formData.password === "Moderator"){
 
-  return (
-    <div className="Container">
-      <h1>Sign Up Page</h1>
-      <p>Please fill out the sign-up form</p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <p>Username</p>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleInputChange}
-          />
-        </div>
+            window.location.assign("http://localhost:3000/moderator");
+            alert("Login Successfully");
 
-        <div>
-          <p>Password</p>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
-        </div>
+          } else if (formData.username === 'Analyst' && formData.password === "Analyst"){
+            window.location.assign("http://localhost:3000/analyst");
+            alert("Login Successfully");
 
-        <div>
-          <p>Email</p>
-          <input
-            type="text"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-        </div>
 
-        <div>
-          <p>User Category </p>
-          <select
-          
-            name="user"
-            value={formData.user}
-            onChange={handleSelectChange}
-          >
-
-          <p> Select a category </p>
-          <option value = "User"> User</option>
-          <option value = "Moderator"> Moderator</option>
-          <option value = "Analyst"> Analyst</option>
-          </select>
-        </div>
-      
-        <button type="submit">Sign Up</button>
+          }else{
+            window.location.assign("http://localhost:3000/");
+            setErrorMessage('logged successfully');
+          }
+               
+        }
+      } catch (error) {
+        // Handle any errors that occur during the request
+        console.error(error);
+  
+        // Display an error message to the user
+        setErrorMessage('Login failed. Please check your credentials.');
+      }
+    };
+  
+    return (
+      <div className="Container">
+        <h1>LOG IN</h1>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <p>Username</p>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+            />
+          </div>
+  
+          <div>
+            <p>Password</p>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+            />
+          </div>
+  
+          <button type="submit">Log In</button>
+        </form>
         
-      </form>
-
-   
-    </div>
-  );
-}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+      </div>
+    );
+  }

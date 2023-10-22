@@ -1,12 +1,13 @@
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useEffect } from "react";
-import { FormEvent, useState } from "react";
-import React, { ChangeEvent } from 'react';
+import { FormEvent } from "react";
+import { ChangeEvent } from 'react';
 
+interface LoginFormProps {
+  onLoginSuccess: () => void; // Define a callback function prop
+}
 
-
-
-export default function LoginForm() {
+export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -25,11 +26,19 @@ export default function LoginForm() {
       const response = await axios.post('http://localhost:8082/api/user', formData);
       console.log(response.data); // Handle the response as needed
 
-      // If the login was successful, you can redirect the user or perform other actions.
+      // If the login was successful, call the onLoginSuccess callback
       if (response.status === 200) {
-        // Redirect the user to the dashboard or another page
-        // For example: window.location.href = '/dashboard';
-        setErrorMessage('logged successfully');
+        if(formData.username === 'Moderator' && formData.password === 'Moderator'){
+
+            onLoginSuccess(); // Notify the parent component about the successful login
+
+        } else if (formData.username === 'Analyst' && formData.password === 'Analyst') {
+
+          onLoginSuccess(); // Notify the parent component about the successful login
+
+      }
+
+           
       }
     } catch (error) {
       // Handle any errors that occur during the request

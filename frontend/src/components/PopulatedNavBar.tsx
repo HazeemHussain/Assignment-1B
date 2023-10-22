@@ -4,6 +4,7 @@ import NavDropdown from "./nav/NavDropdown";
 import NavItem from "./nav/NavItem";
 import axios from 'axios';
 
+
 const PopulatedNavBar = () => {
   return (
     <NavBar>

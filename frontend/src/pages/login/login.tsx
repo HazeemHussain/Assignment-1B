@@ -6,11 +6,7 @@ import React, { ChangeEvent } from 'react';
 
 
 
-
-
 export default function login() {
-
-  
 
 
     const [formData, setFormData] = useState({
@@ -35,9 +31,21 @@ export default function login() {
         if (response.status === 200) {
           // Redirect the user to the dashboard or another page
           // For example: window.location.href = '/dashboard';
-               
+          if(formData.username === 'Moderator' && formData.password === "Moderator"){
 
-          setErrorMessage('logged successfully');
+            window.location.assign("http://localhost:3000/moderator");
+            alert("Login Successfully");
+
+          } else if (formData.username === 'Analyst' && formData.password === "Analyst"){
+            window.location.assign("http://localhost:3000/analyst");
+            alert("Login Successfully");
+
+
+          }else{
+            window.location.assign("http://localhost:3000/");
+            setErrorMessage('logged successfully');
+          }
+               
         }
       } catch (error) {
         // Handle any errors that occur during the request
