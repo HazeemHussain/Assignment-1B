@@ -3,6 +3,7 @@ import React, { useState, useEffect, ChangeEvent } from "react";
 import axios from 'axios';
 import styles from "styles/Articles.module.scss"; // Import the CSS module
 
+
 interface ArticlesProps {
   articles: ArticlesInterface[];
 }
@@ -18,7 +19,7 @@ interface ArticlesInterface {
   evidence: string;
   summary: string;
   status: boolean; // Include the status field
-  analystStatus: boolean;
+  analystStatus: boolean; //Status of the analyst
 }
 
 const Articles: NextPage<ArticlesProps> = ({ articles }) => {
@@ -41,7 +42,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   const handleSummaryChange = (e: ChangeEvent<HTMLTextAreaElement>, articleId: string) => {
     const updatedArticles = moderatedArticles.map(article => {
-      if (article._id === articleId) { // Use articleId here
+      if (article._id === articleId) { 
         return { ...article, summary: e.target.value };
       }
       return article;
@@ -49,8 +50,9 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
     setModeratedArticles(updatedArticles);
   };
 
+  //This method is called when the analyst clicks on the save button to summary of the article
   const handleSummarySave = async (articleId: string) => {
-    const article = moderatedArticles.find(a => a._id === articleId); // Use articleId here
+    const article = moderatedArticles.find(a => a._id === articleId); 
     if (article) {
       // Check if the summary is not blank
       if (!article.summary.trim()) {
@@ -59,7 +61,9 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
       }
 
       try {
-        await axios.put(`http://localhost:8082/api/article/update-summary/${articleId}`, { // Use articleId here
+
+        //Saving the summary that the analyst entered to the database
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/article/update-summary/${articleId}`, { 
           summary: article.summary,
         });
         alert('Summary saved!');
@@ -86,29 +90,27 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
           </tr>
         </thead>
         <tbody>
-          {moderatedArticles.map((article) => (
-            <>
-              <tr key={article._id} className={styles.row}>
-                {headers.map((header) => (
-                  <td key={header.key}>{article[header.key]}</td>
-                ))}
-              </tr>
-              <tr>
-                <td colSpan={headers.length}>
-                  <textarea
-                    placeholder="Enter summary"
-                    value={article.summary}
-                    onChange={(e) => handleSummaryChange(e, article._id)}
-                  />
-                </td>
-                <td>
-                  <button onClick={() => handleSummarySave(article._id)}>
-                    Save Summary
-                  </button>
-                </td>
-              </tr>
-            </>
-          ))}
+          {moderatedArticles.map((article) => ([
+            <tr key={`data-${article._id}`} className={styles.row}>
+              {headers.map((header) => (
+                <td key={header.key}>{article[header.key]}</td>
+              ))}
+            </tr>,
+            <tr key={`summary-${article._id}`}>
+              <td colSpan={headers.length}>
+                <textarea
+                  placeholder="Enter summary"
+                  value={article.summary}
+                  onChange={(e) => handleSummaryChange(e, article._id)}
+                />
+              </td>
+              <td>
+                <button onClick={() => handleSummarySave(article._id)}>
+                  Save Summary
+                </button>
+              </td>
+            </tr>
+          ]))}
         </tbody>
       </table>
     </div>
@@ -119,7 +121,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get('http://localhost:8082/api/article');
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article`);
     const articles: ArticlesInterface[] = response.data;
 
     // Log the articles to the console to check if the id field is present
