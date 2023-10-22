@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import formStyles from "../../../styles/Form.module.scss";
 import axios from 'axios';
 import { useEffect } from "react";
+import config from "../../config";
 
 //Submit New 
 const NewDiscussion = () => {
@@ -53,12 +54,12 @@ const NewDiscussion = () => {
 
       setTimeout(async () => {
         // Send the form data to your backend API
-        //const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/article`, formData);
+
+        const response = await axios.post(`${config.apiUrl}api/article`, formData);
 
 
          //console.log('Data sent successfully:', response.data);
 
-        const response = await axios.post('http://localhost:8082/api/article?moderator=true', formData);
 
         console.log('Data sent successfully to moderator view:', response.data);
 

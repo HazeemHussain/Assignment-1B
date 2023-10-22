@@ -2,6 +2,7 @@ import { GetStaticProps, NextPage } from "next";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import styles from "styles/Articles.module.scss"; // Import the CSS module
+import config from "@/config";
 
 interface ArticlesProps {
   articles: ArticlesInterface[];
@@ -39,15 +40,15 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   //Function that is called when the user clicks on the approve button to approve the article
   const handleApprove = (articleId: string) => {
     // Display a confirmation dialog
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/article/approve/${articleId}`;
-    console.log('Request URL:', url); // Log the URL
+    //const url = `${process.env.NEXT_PUBLIC_API_URL}/api/article/approve/${articleId}`;
+    // console.log('Request URL:', url); // Log the URL
     console.log('Article ID to be approved', articleId);
 
     //Asking moderation for confirmation of the article
     const confirmApproval = window.confirm("Are you sure you want to approve this article?");
 
     if (confirmApproval) {
-      axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${articleId}`)
+      axios.put(`${config.apiUrl}api/article/${articleId}`)
         .then(response => {
           console.log('Response:', response.data); // Log the response
           setModeratedArticles(articles => articles.filter(article => article._id !== articleId));
@@ -68,7 +69,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
     if (confirmApproval) {
 
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${articleId}`, {
+      fetch(`${config.apiUrl}api/article/${articleId}`, {
         method: 'DELETE',
       })
 
@@ -130,8 +131,10 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article`);
+    const response = await axios.get(`${config.apiUrl}api/article`);
     const articles: ArticlesInterface[] = response.data;
+    //Calling only the articles can only been seen by moderator
+    const approvedArticles = articles.filter(article => article.status === false);
 
     return {
       props: {

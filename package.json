@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "hbs": "^4.2.0",
-    "heroku": "^8.6.0"
+    "heroku": "^8.6.0",
+    "mongoose": "^7.6.3"
   }
 }

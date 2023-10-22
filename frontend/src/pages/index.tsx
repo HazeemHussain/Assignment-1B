@@ -2,6 +2,7 @@ import React, { Key, useState } from 'react';
 import axios from 'axios';
 import styles from 'styles/Articles.module.scss'; // Import the CSS module
 import { NextPage } from 'next';
+import config from '@/config';
 
 //Home page
 
@@ -39,8 +40,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   const handleSearch = () => {
     axios
-    .get(`http://localhost:8082/api/article/search?query=${searchQuery}`)
-      //.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article/search?query=${searchQuery}`)
+      .get(`${config.apiUrl}api/article/search?query=${searchQuery}`)
       .then((response) => {
         setSearchResults(response.data);
         console.log(response.data);
@@ -54,7 +54,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
   return (
     <div className={styles.container}>
-      <h1>Search Article</h1>
+      <h1>SPEED</h1>
 
       <div className={styles['centered-search-bar']}>
         <input

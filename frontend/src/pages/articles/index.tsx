@@ -2,6 +2,7 @@ import { GetStaticProps, NextPage } from "next";
 import React from "react";
 import SortableTable from "../../components/table/SortableTable";
 import axios from 'axios';
+import config from "../../config"; 
 import styles from "styles/Articles.module.scss"; // Import the CSS module
 
 interface ArticlesProps {
@@ -68,9 +69,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   try {
     // Fetch articles from your backend API
-    //const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article`); // Replace with your actual API endpoint
-    //const response = await axios.get('http://localhost:8082/api/article');
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/article`);
+    const response = await axios.get(`${config.apiUrl}api/article`); // Replace with your actual API endpoint
     const articles: ArticlesInterface[] = response.data;
     const approvedArticles = articles.filter(article => article.analystStatus === true);
 
