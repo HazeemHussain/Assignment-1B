@@ -1,4 +1,4 @@
-import { GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, GetStaticProps, NextPage } from "next";
 import React, { useState, useEffect, ChangeEvent } from "react";
 import axios from 'axios';
 import styles from "styles/Articles.module.scss"; // Import the CSS module
@@ -128,7 +128,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
 };
 
-export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
+export const getServerSideProps: GetServerSideProps<ArticlesProps> = async (context) => {
   try {
     // Fetch articles from your backend API
     const response = await axios.get(`${config.apiUrl}api/article`);

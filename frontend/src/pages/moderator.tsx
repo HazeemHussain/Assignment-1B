@@ -1,4 +1,4 @@
-import { GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, GetStaticProps, NextPage } from "next";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import styles from "styles/Articles.module.scss"; // Import the CSS module
@@ -139,12 +139,11 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 
 };
 
-export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
+export const getServerSideProps: GetServerSideProps<ArticlesProps> = async (context) => {
   try {
     // Fetch articles from your backend API
     const response = await axios.get(`${config.apiUrl}api/article`);
     const articles: ArticlesInterface[] = response.data;
-    //Calling only the articles can only been seen by moderator
     const approvedArticles = articles.filter(article => article.status === false);
 
     return {
@@ -161,6 +160,7 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
     };
   }
 };
+
 
 
 export default Articles;
